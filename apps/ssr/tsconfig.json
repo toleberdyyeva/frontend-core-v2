@@ -5,11 +5,9 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "esModuleInterop": false,
     "allowJs": true,
     /* Bundler mode */
     "moduleResolution": "Bundler",
-    //    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -18,8 +16,14 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "./src"
+  ],
+  "exclude": [
+    "./node_modules"
+  ],
+  "references": [{ "path": "./tsconfig.node.json"}]
 }

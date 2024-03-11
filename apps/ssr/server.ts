@@ -5,6 +5,8 @@ interface SSRManifest {
     [key: string]: string[];
 }
 
+interface Renderer { head?: string;  html?: string };
+
 // Асинхронная самовызывающаяся функция для поддержки верхнеуровневого await
 (async () => {
     // Constants
@@ -45,15 +47,14 @@ interface SSRManifest {
             const url = req.originalUrl.replace(base, '');
 
             let template: string;
-            let render: (url: string, manifest?: SSRManifest) => Promise<{ head?: string; html?: string }>;
+            let render: (url: string, manifest?: SSRManifest) => Promise<Renderer> | Renderer;
             if (!isProduction) {
-                template = await fs.readFile('src/public/index.html', 'utf-8');
+                template = await fs.readFile('index.html', 'utf-8');
                 template = await vite.transformIndexHtml(url, template);
-                render = (await vite.ssrLoadModule('src/entry/entry-server.tsx')).render;
+                render = (await vite.ssrLoadModule('./src/entry/entry-server.tsx')).render;
             } else {
                 template = templateHtml;
-                // @ts-ignore
-                render = (await import('../../dist/entry-server.js')).render;
+                render = (await import('./dist/server/entry-server')).render;
             }
 
             const rendered = await render(url, ssrManifest);
@@ -64,10 +65,8 @@ interface SSRManifest {
 
             res.status(200).set({ 'Content-Type': 'text/html' }).send(html);
         } catch (e: unknown) {
-            console.log(e)
             if (e instanceof  Error){
                 vite?.ssrFixStacktrace(e);
-                console.log(e.stack);
                 res.status(500).end(e.stack);
             }
         }
@@ -76,5 +75,5 @@ interface SSRManifest {
     // Start http server
     app.listen(port, () => {
         console.log(`Server started at http://localhost:${port}`);
-    });
+        });
 })();

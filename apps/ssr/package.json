@@ -4,11 +4,12 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "pnpm tsx src/server",
-    "build": "npm run build:client && npm run build:server",
-    "build:client": "vite build --ssrManifest --outDir dist/client",
-    "build:server": "vite build --ssr src/entry/entry-server.tsx --outDir dist/server",
-    "preview": "cross-env NODE_ENV=production node server"
+    "start:app-prod": "pnpm build && NODE_ENV=production pnpm run start:app-dev",
+    "start:app-dev": "tsx src/server",
+    "dev": "pnpm run start:app-dev",
+    "build": "pnpm run build:client && npm run build:server",
+    "build:client": "vite build --outDir dist/client --ssrManifest",
+    "build:server": "vite build --outDir dist/server --ssr ./src/entry/entry-server.tsx"
   },
   "dependencies": {
     "compression": "^1.7.4",
